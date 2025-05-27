@@ -18,11 +18,11 @@ export default function DashboardLayout({
      {/* dashboard*/}
      <div className="container md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
         {/* sidebar*/}
-        <aside>
-            <div>Dashboard Navigation</div>
+        <aside className="fixed md:sticky hidden top-16 z-30 md:block border-r h-[calc(100vh-4.1rem)]">
+            <div className="py-6 px-2 lg:py-8">Dashboard Navigation</div>
         </aside>
         {/* main contents*/}
-     <main>
+     <main className="flex w-full flex-col overflow-hidden p-4">
       {children}
      </main>
      </div>
