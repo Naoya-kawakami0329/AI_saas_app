@@ -17,11 +17,16 @@ const ToolPage = async ({ params }: PageProps) => {
         notFound()
     }
     
+    const ToolComponent = tool.component
+
+
     return (
         <div>
             <PageContainer>
                 <PageHeader title={tool.title} description={tool.description} />
-                <tool.component />
+                <div className="max-w-2xl">
+                    <ToolComponent />
+                </div>
             </PageContainer>
         </div>
     )
