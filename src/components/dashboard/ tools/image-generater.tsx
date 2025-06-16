@@ -1,13 +1,26 @@
+'use client'
+
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { generateImage } from "@/app/actions/generate-image";
+import { GenerateImageState } from "@/types/actions";
+import React from "react";
+import { useActionState } from "react";
+
+const initialState: GenerateImageState = {
+    imageURL: undefined,
+    error: undefined,
+    status: 'idle',
+    keyword: undefined,
+}
 
 const ImageGenerater = () => {
+    const [state,formAction] = useActionState(generateImage,initialState)
     return (
         <div className="space-y-6">
            <div className="space-y-4">
-            <form action={generateImage} className="space-y-4">
+            <form action={formAction} className="space-y-4">
                 <div className="space-y-2">
                     <Label htmlFor="キーワード" className="text-sm font-medium text-gray-700">
                         キーワード
