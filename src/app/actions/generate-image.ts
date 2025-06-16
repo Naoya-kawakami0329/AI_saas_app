@@ -1,7 +1,6 @@
 'use server'
 
 import { GenerateImageState } from '@/types/actions';
-import { redirect } from 'next/navigation';
 
 export async function generateImage(state: GenerateImageState, formData: globalThis.FormData): Promise<GenerateImageState> {
     const keyword = formData.get('keyword') as string;
@@ -38,11 +37,8 @@ export async function generateImage(state: GenerateImageState, formData: globalT
     }
 
     const data = await response.json();
-    
-    // 生成された画像のBase64データを取得
-    const imageData = data.artifacts[0].base64;
-    return {
-        imageURL: `data:image/png;base64,${imageData}`,
+
+    return {  
         status: 'success',
         keyword: keyword,
     }

@@ -31,9 +31,10 @@ export async function POST(req: NextRequest) {
         if (response.status !== 200) {
             throw new Error(`${response.status}: ${response.data.toString()}`);
         }
-
-        console.log(response.data);
-        return NextResponse.json(response.data);
+        // 画像データをBase64形式に変換
+      const base64Image = Buffer.from(response.data).toString('base64');
+      const imageURL = `data:image/png;base64,${base64Image}`;
+        return NextResponse.json({ imageURL });
     } catch (error) {
         console.error(error);
         return NextResponse.json(
