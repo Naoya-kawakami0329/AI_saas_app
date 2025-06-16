@@ -1,5 +1,3 @@
-import PageContainer from "@/components/dashboard/page-container"
-import PageHeader from "@/components/dashboard/page-header"
 import { tools, ToolType } from "@/config/tools"
 import { notFound } from "next/navigation"
 
@@ -9,27 +7,19 @@ interface PageProps {
     }
 }
 
-const ToolPage = async ({ params }: PageProps) => {
-    const toolType = params.tool as ToolType
+export default async function ToolPage({ params }: PageProps) {
+    const toolType = await Promise.resolve(params.tool) as ToolType
     const tool = tools[toolType]
 
     if (!tool) {
         notFound()
     }
     
-    const ToolComponent = tool.component
-
-
     return (
         <div>
-            <PageContainer>
-                <PageHeader title={tool.title} description={tool.description} />
-                <div className="max-w-2xl">
-                    <ToolComponent />
-                </div>
-            </PageContainer>
+            <h2>{tool.title}</h2>
+            <p>{tool.description}</p>
+            <tool.component />
         </div>
     )
 }
-
-export default ToolPage;

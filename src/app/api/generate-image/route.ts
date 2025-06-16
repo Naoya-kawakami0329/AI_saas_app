@@ -3,17 +3,21 @@ import axios from "axios";
 import FormData from "form-data";
 
 export async function POST(req: NextRequest) {
+    const { keyword } = await req.json();
+    console.log(keyword);
     try {
-        const { prompt } = await req.json();
-
         const payload = {
-            prompt: prompt,
+            prompt: keyword,
             output_format: "png"
         };
 
+        const formData = new FormData();
+        formData.append("prompt", payload.prompt);
+        formData.append("output_format", payload.output_format);
+
         const response = await axios.postForm(
             `https://api.stability.ai/v2beta/stable-image/generate/core`,
-            axios.toFormData(payload, new FormData()),
+            formData,
             {
                 validateStatus: undefined,
                 responseType: "arraybuffer",
@@ -29,6 +33,7 @@ export async function POST(req: NextRequest) {
         }
 
         console.log(response.data);
+        return NextResponse.json(response.data);
     } catch (error) {
         console.error(error);
         return NextResponse.json(
