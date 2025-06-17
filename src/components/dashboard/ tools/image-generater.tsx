@@ -7,7 +7,8 @@ import { generateImage } from "@/app/actions/generate-image";
 import { GenerateImageState } from "@/types/actions";
 import React from "react";
 import { useActionState } from "react";
-import { Download } from "lucide-react";
+import { Download, ImageIcon, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const initialState: GenerateImageState = {
     imageURL: undefined,
@@ -17,7 +18,7 @@ const initialState: GenerateImageState = {
 }
 
 const ImageGenerater = () => {
-    const [state,formAction] = useActionState(generateImage,initialState)
+    const [state,formAction,pending] = useActionState(generateImage,initialState)
     return (
         <div className="space-y-6">
            <div className="space-y-4">
@@ -33,7 +34,13 @@ const ImageGenerater = () => {
                         required
                     />
                 </div>
-                <Button type="submit">画像を生成する</Button>
+                <Button 
+                type="submit"
+                 disabled={pending} 
+                 className={cn("w-full duration-300", pending && "bg-gray-300")}>
+                    {pending ? <Loader2 className="animate-spin"/> : <ImageIcon className="mr-2"/>}
+                    画像を生成する
+                </Button>
             </form>
            </div>
            {/* 画像生成結果 */}
@@ -44,7 +51,7 @@ const ImageGenerater = () => {
                     <img src={state.imageURL} alt="Generated Image" className="w-full h-full object-cover" />
                 </div>
             </div>
-            <Button>
+            <Button className="w-full" variant={"secondary"}>
                 <Download className="mr-2"/>
                 ダウンロード
             </Button>

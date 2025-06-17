@@ -6,6 +6,21 @@ export async function generateImage(state: GenerateImageState, formData: globalT
     const keyword = formData.get('keyword') as string;
     const apiKey = process.env.STABILITY_API_KEY;
 
+    // キーワードを英語に翻訳
+    const translationUrl = new URL('https://api.mymemory.translated.net/get');
+    translationUrl.searchParams.append('q', keyword);
+    translationUrl.searchParams.append('langpair', 'ja|en');
+
+    const translationResponse = await fetch(translationUrl.toString(), {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+
+    const translationData = await translationResponse.json();
+    const englishKeyword = translationData.responseData.translatedText;
+
     const response = await fetch(
         `${process.env.BASE_URL}/api/generate-image`,
         {
@@ -16,7 +31,7 @@ export async function generateImage(state: GenerateImageState, formData: globalT
                 'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-            keyword
+                keyword: englishKeyword
             })
         }
     );
