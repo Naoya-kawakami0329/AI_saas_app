@@ -28,7 +28,7 @@ const BackgroundRemover= () => {
            const url=window.URL.createObjectURL(blob)
            const link=document.createElement('a')
            link.href=url
-           link.download=`${state.processedImage}.png`
+           link.download=`background-removed.png`
            document.body.appendChild(link)
            link.click()
            toast({

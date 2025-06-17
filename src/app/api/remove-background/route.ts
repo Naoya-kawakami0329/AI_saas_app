@@ -14,9 +14,21 @@ export async function POST(req: NextRequest) {
         const bytes = await File.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
+        // 画像のメタデータを確認
+        const metadata = await sharp(buffer).metadata();
+        if (!metadata.format) {
+            return NextResponse.json({ error: 'サポートされていない画像フォーマットです' }, { status: 400 });
+        }
+
+        // 画像を圧縮
+        const optimizedInput = await sharp(buffer)
+            .resize(1280, 720, { fit: 'inside' })
+            .toFormat('png')
+            .toBuffer();
+
         // 新しいFormDataを作成
         const apiFormData = new FormData();
-        const blob = new Blob([buffer], { type: 'image/png' });
+        const blob = new Blob([optimizedInput], { type: 'image/png' });
         apiFormData.append('image', blob, 'image.png');
 
         const response = await axios.post(
@@ -26,22 +38,28 @@ export async function POST(req: NextRequest) {
                 headers: { 
                     Authorization: `Bearer ${process.env.STABILITY_API_KEY}`,
                     'Content-Type': 'multipart/form-data'
-                },
-                responseType: 'arraybuffer'
+                }
             },
         );
 
         if (response.status !== 200) {
-            throw new Error(`${response.status}: ${response.data.toString()}`);
+            throw new Error(`${response.status}: ${JSON.stringify(response.data)}`);
         }
 
-        // 画像を圧縮
-        const optimizedImage = await sharp(response.data)
-            .resize(1280, 720) 
-            .png({ 
-                quality: 80, 
-                compressionLevel: 9,
-            })
+
+        // 画像データを取得
+        const imageData = response.data.image;
+        if (!imageData) {
+            throw new Error('画像データが見つかりません');
+        }
+
+        // Base64データをバッファに変換
+        const imageBuffer = Buffer.from(imageData, 'base64');
+
+        // 画像を最適化
+        const optimizedImage = await sharp(imageBuffer)
+            .resize(1280, 720, { fit: 'inside' })
+            .toFormat('png')
             .toBuffer();
 
         // 圧縮した画像をBase64形式に変換
@@ -50,7 +68,13 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ imageURL });
     } catch (error) {
-        console.error(error);
+        console.error('Background removal error:', error);
+        if (error instanceof Error) {
+            return NextResponse.json(
+                { error: `画像の背景削除に失敗しました: ${error.message}` }, 
+                { status: 500 }
+            );
+        }
         return NextResponse.json(
             { error: "画像の背景削除に失敗しました" }, 
             { status: 500 }
