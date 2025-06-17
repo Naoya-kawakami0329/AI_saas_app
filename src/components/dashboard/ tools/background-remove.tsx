@@ -3,32 +3,32 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { generateImage } from "@/app/actions/generate-image";
-import { GenerateImageState } from "@/types/actions";
+import { RemoveBackgroundState } from "@/types/actions";
 import React from "react";
 import { useActionState } from "react";
 import { Download, Layers2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoadingSpinner from "../loading-spinner";
 import { toast } from "@/hooks/use-toast";
+import { removeBackground } from "@/app/actions/remove-background";
 
 
-const initialState: GenerateImageState = { 
+const initialState: RemoveBackgroundState = { 
     status: 'idle',
 }
 
 const BackgroundRemover= () => {
-    const [state,formAction,pending] = useActionState(generateImage,initialState)
+    const [state,formAction,pending] = useActionState(removeBackground,initialState)
 
     const handleDownload = () => {
-        if (!state.imageURL) {return}
+        if (!state.processedImage) {return}
         try {
-           const base64Image = state.imageURL?.split(',')[1]
+           const base64Image = state.processedImage?.split(',')[1]
           const blob=new Blob([Buffer.from(base64Image, 'base64')],{type: 'image/png'})
            const url=window.URL.createObjectURL(blob)
            const link=document.createElement('a')
            link.href=url
-           link.download=`${state.keyword}.png`
+           link.download=`${state.processedImage}.png`
            document.body.appendChild(link)
            link.click()
            toast({
@@ -74,11 +74,11 @@ const BackgroundRemover= () => {
             </form>
            </div>
            {/* 画像生成結果 */}
-           {state.imageURL && (
+           {state.processedImage && (
            <div className="space-y-4">
             <div className="overflow-hidden rounded-lg border bg-slate-50">
                 <div className="aspect-video relative">
-                    <img src={state.imageURL} alt="Generated Image" className="w-full h-full object-cover" />
+                    <img src={state.processedImage} alt="Generated Image" className="w-full h-full object-cover" />
                 </div>
             </div>
             <Button className="w-full" variant={"outline"} onClick={handleDownload}>
