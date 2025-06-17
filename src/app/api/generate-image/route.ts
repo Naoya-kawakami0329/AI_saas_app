@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     console.log(keyword);
     try {
         const payload = {
-            prompt: keyword,
+            prompt: `Create a beautiful image of ${keyword}`,
             output_format: "png"
         };
 

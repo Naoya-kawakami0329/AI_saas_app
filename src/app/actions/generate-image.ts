@@ -16,17 +16,7 @@ export async function generateImage(state: GenerateImageState, formData: globalT
                 'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                text_prompts: [
-                    {
-                        text: keyword,
-                        weight: 1
-                    }
-                ],
-                cfg_scale: 7,
-                height: 1024,
-                width: 1024,
-                samples: 1,
-                steps: 30,
+            keyword
             })
         }
     );
@@ -40,6 +30,7 @@ export async function generateImage(state: GenerateImageState, formData: globalT
 
     return {  
         status: 'success',
+        imageURL: data.imageURL,
         keyword: keyword,
     }
 } 

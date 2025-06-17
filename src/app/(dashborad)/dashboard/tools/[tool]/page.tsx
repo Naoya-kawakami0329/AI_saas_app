@@ -1,14 +1,9 @@
 import { tools, ToolType } from "@/config/tools"
 import { notFound } from "next/navigation"
 
-interface PageProps {
-    params: {
-        tool: string
-    }
-}
 
-export default async function ToolPage({ params }: PageProps) {
-    const toolType = await Promise.resolve(params.tool) as ToolType
+export default async function ToolPage({ params }:{params: Promise<{tool: string}>}) {
+    const toolType = (await params).tool as ToolType
     const tool = tools[toolType]
 
     if (!tool) {
