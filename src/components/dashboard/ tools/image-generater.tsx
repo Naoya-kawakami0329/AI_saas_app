@@ -7,8 +7,9 @@ import { generateImage } from "@/app/actions/generate-image";
 import { GenerateImageState } from "@/types/actions";
 import React from "react";
 import { useActionState } from "react";
-import { Download, ImageIcon, Loader2 } from "lucide-react";
+import { Download, ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import LoadingSpinner from "../loading-spinner";
 
 const initialState: GenerateImageState = {
     imageURL: undefined,
@@ -38,7 +39,7 @@ const ImageGenerater = () => {
                 type="submit"
                  disabled={pending} 
                  className={cn("w-full duration-300", pending && "bg-gray-300")}>
-                    {pending ? <Loader2 className="animate-spin"/> : <ImageIcon className="mr-2"/>}
+                    {pending ? <LoadingSpinner/> : <ImageIcon className="mr-2"/>}
                     画像を生成する
                 </Button>
             </form>
