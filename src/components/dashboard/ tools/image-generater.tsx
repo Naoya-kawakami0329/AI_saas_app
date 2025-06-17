@@ -10,16 +10,43 @@ import { useActionState } from "react";
 import { Download, ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoadingSpinner from "../loading-spinner";
+import { toast } from "@/hooks/use-toast";
 
-const initialState: GenerateImageState = {
-    imageURL: undefined,
-    error: undefined,
+
+const initialState: GenerateImageState = { 
     status: 'idle',
-    keyword: undefined,
 }
 
 const ImageGenerater = () => {
     const [state,formAction,pending] = useActionState(generateImage,initialState)
+
+    const handleDownload = () => {
+        if (!state.imageURL) {return}
+        try {
+           const base64Image = state.imageURL?.split(',')[1]
+          const blob=new Blob([Buffer.from(base64Image, 'base64')],{type: 'image/png'})
+           const url=window.URL.createObjectURL(blob)
+           const link=document.createElement('a')
+           link.href=url
+           link.download=`${state.keyword}.png`
+           document.body.appendChild(link)
+           link.click()
+           toast({
+            title: 'ダウンロードに成功しました',
+            description: '画像をダウンロードしました',
+           })
+           document.body.removeChild(link)
+           window.URL.revokeObjectURL(url)
+        } catch (error) {
+            console.error(error);
+            toast({
+                title: 'ダウンロードに失敗しました',
+                description: '再度試してください',
+                variant: 'destructive',
+            })
+        }
+    }
+
     return (
         <div className="space-y-6">
            <div className="space-y-4">
@@ -38,7 +65,7 @@ const ImageGenerater = () => {
                 <Button 
                 type="submit"
                  disabled={pending} 
-                 className={cn("w-full duration-300", pending && "bg-gray-300")}>
+                 className={cn("w-full duration-300", pending && "bg-gray-400")}>
                     {pending ? <LoadingSpinner/> : <ImageIcon className="mr-2"/>}
                     画像を生成する
                 </Button>
@@ -52,7 +79,7 @@ const ImageGenerater = () => {
                     <img src={state.imageURL} alt="Generated Image" className="w-full h-full object-cover" />
                 </div>
             </div>
-            <Button className="w-full" variant={"secondary"}>
+            <Button className="w-full" variant={"outline"} onClick={handleDownload}>
                 <Download className="mr-2"/>
                 ダウンロード
             </Button>

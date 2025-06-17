@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import FormData from "form-data";
+import sharp from "sharp";
 
 export async function POST(req: NextRequest) {
     const { keyword } = await req.json();
@@ -31,9 +32,20 @@ export async function POST(req: NextRequest) {
         if (response.status !== 200) {
             throw new Error(`${response.status}: ${response.data.toString()}`);
         }
-        // 画像データをBase64形式に変換
-      const base64Image = Buffer.from(response.data).toString('base64');
-      const imageURL = `data:image/png;base64,${base64Image}`;
+
+        // 画像を圧縮
+        const optimizedImage = await sharp(response.data)
+            .resize(1280, 720) 
+            .png({ 
+                quality: 80, 
+                compressionLevel: 9,
+            })
+            .toBuffer();
+
+        // 圧縮した画像をBase64形式に変換
+        const base64Image = optimizedImage.toString('base64');
+        const imageURL = `data:image/jpeg;base64,${base64Image}`;
+
         return NextResponse.json({ imageURL });
     } catch (error) {
         console.error(error);
