@@ -12,12 +12,16 @@ export default function DashboardLayout({
   return (
     <div>
      <header className="sticky top-0 z-40 border-b bg-background">
-        <div className="container flex items-center h-16 px-4">
+        <div className="flex items-center h-16 px-6">
           <MobileNav/>
+          <div className="flexx w-full">
             <Link href="/">
             <h1 className="text-lg font-bold">AI Image Generator</h1>
             </Link>
-            <AuthButton />
+            <div className="ml-auto">
+              <AuthButton />
+            </div>
+          </div>
         </div>
      </header>
      {/* dashboard*/}
