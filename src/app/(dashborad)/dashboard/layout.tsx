@@ -2,7 +2,7 @@ import MobileNav from "@/components/dashboard/mobile-nav";
 import DashboardNav from "@/components/dashboard/nav";
 import { Toaster } from "@/components/ui/sonner";
 import Link from "next/link";
-
+import { AuthButton } from "@/components/auth/auth-button";
 
 export default function DashboardLayout({
   children,
@@ -17,7 +17,7 @@ export default function DashboardLayout({
             <Link href="/">
             <h1 className="text-lg font-bold">AI Image Generator</h1>
             </Link>
-          
+            <AuthButton />
         </div>
      </header>
      {/* dashboard*/}
