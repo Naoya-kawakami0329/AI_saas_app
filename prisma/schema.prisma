@@ -8,3 +8,33 @@ datasource db {
   url          = env("DATABASE_URL")
 }
 
+model User {
+  id String @id @default(uuid())
+  clerkId String @unique
+  email String @unique
+  stripecustomerId String? @unique
+  credits Int @default(5)
+  subscriptionStatus SubscriptionStatus @default(FREE)
+  subscription Subscription?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Subscription {
+  id String @id @default(uuid())
+  userId String　@unique
+  user User @relation(fields: [userId], references: [id])
+  stripeSubscriptionId String @unique
+  stripePriceId String
+  stripeCurrentPeriodEnd DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum SubscriptionStatus {
+  FREE
+  BASIC
+  PRO
+}
