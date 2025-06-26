@@ -10,14 +10,14 @@ datasource db {
 
 model User {
   id String @id @default(uuid())
-  clerkId String @unique
+clerkId String @unique
   email String @unique
   stripecustomerId String? @unique
-  credits Int @default(5)
-  subscriptionStatus SubscriptionStatus @default(FREE)
+credits Int @default(5)
+subscriptionStatus SubscriptionStatus @default(FREE)
   subscription Subscription?
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+updatedAt DateTime @updatedAt
 }
 
 model Subscription {
@@ -28,7 +28,7 @@ model Subscription {
   stripePriceId String
   stripeCurrentPeriodEnd DateTime
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt 
 
     @@index([userId])
 }

@@ -14,9 +14,9 @@ export default function DashboardLayout({
      <header className="sticky top-0 z-40 border-b bg-background">
         <div className="flex items-center justify-between h-16 px-6">
           <div className="flex items-center gap-4">
-            <MobileNav/>
+          <MobileNav/>
             <Link href="/">
-              <h1 className="text-lg font-bold">AI Image Generator</h1>
+            <h1 className="text-lg font-bold">AI Image Generator</h1>
             </Link>
           </div>
           <div className="flex items-center">
